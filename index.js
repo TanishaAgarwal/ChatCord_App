@@ -1,44 +1,34 @@
-const app  = require('express')();
-const http = require('http').createServer(app);
-const io = require('socket.io')(http);
+const path = require('path');
+const express  = require('express');
+const http = require('http');
+const socketio = require('socket.io');
+const app = express();
+const server = http.createServer(app);
+const io = socketio(server);
 
-app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/index.html');
-});
+// Set static folder 
+app.use(express.static(path.join(__dirname, 'public')))
 
-// io.on('connection', (socket) => {
-//     socket.on('chat message', (msg) => {
-//         console.log('chat msg : ', (msg));
-//   });
-// });
+//Runs when client connect
+io.on('connection', socket => {
+  console.log("New web socket connection!!")
+  // When new user enters..
+  socket.emit('message', "Welcome to Chat-Cord!!");
+  
+  // boardcast to all othr user of group !!
+  socket.broadcast.emit('message', 'A user has joined the chat.');
 
-// io.on('connection', (socket) => {
-//   socket.emit('news', { hello: 'world' });
-//   socket.on('my other event', (data) => {
-//     console.log(data);
-//   });
-// });
+  // When the user is disconnected
+  socket.on('disconnect', ()=>{
+    io.emit('message', 'A  user has left the chat.')
+  })
 
-// const io = require('socket.io')(80);
-const chat = io
-  .of('/chat')
-  .on('connection', (socket) => {
-    socket.emit('a message', {
-        that: 'only'
-      , '/chat': 'will get'
-    });
-    chat.emit('a message', {
-        everyone: 'in'
-      , '/chat': 'will get'
-    });
-  });
+  // Listen to chatMessage
+  socket.on('chatMessage', msg=>{
+    io.emit('message', msg);
+  })
+})
 
-const news = io
-  .of('/news')
-  .on('connection', (socket) => {
-    socket.emit('item', { news: 'item' });
-  });
-
-http.listen(process.env.PORT || 3000, () => {
+server.listen(process.env.PORT || 3000, () => {
   console.log('listening on *:3000');
 });
