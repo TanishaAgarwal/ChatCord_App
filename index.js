@@ -19,10 +19,10 @@ io.on('connection', socket => {
     socket.join(user.room);
 
     // When new user enters..
-    socket.emit('message', formatMessage(botName, "Welcome to Chat-Cord!!"));
+    socket.emit('info', formatMessage(botName, "Welcome to Chat-Cord!!"));
       
     // boardcast to all othr user of group !!
-    socket.broadcast.to(user.room).emit('message', formatMessage(botName, `${username} has joined the chat.`));
+    socket.broadcast.to(user.room).emit('info', formatMessage(botName, `${username} has joined the chat.`));
 
     io.to(user.room).emit('roomUsers',{
       room: user.room,
@@ -35,14 +35,16 @@ io.on('connection', socket => {
   // Listen to chatMessage
   socket.on('chatMessage', msg=>{
     const user = getCurrentUser(socket.id)
-    io.to(user.room).emit('message', formatMessage( user.username ,msg));
+    socket.broadcast.to(user.room).emit('recieve', formatMessage( user.username ,msg));
+    socket.emit('send', formatMessage(user.username,msg));
+
   })
 
   // When the user is disconnected
 socket.on('disconnect', ()=>{
   const user = userLeave(socket.id);
   if(user){
-    io.to(user.room).emit('message', formatMessage(botName, `${user.username} has left the chat.`))
+    io.to(user.room).emit('info', formatMessage(botName, `${user.username} has left the chat.`))
     io.to(user.room).emit('roomUsers',{
       room: user.room,
       users: getRoomUsers(user.room)

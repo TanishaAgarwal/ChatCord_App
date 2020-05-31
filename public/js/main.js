@@ -21,14 +21,26 @@ socket.on('roomUsers', ({room , users}) => {
 })
 
 //Message from server
-socket.on('message', message => {
+socket.on('send', message => {
     console.log(message);
-    outputMessage(message);
+    outputMessage_send(message);
+
+    //scroll down
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+})
+socket.on('recieve', message => {
+    console.log(message);
+    outputMessage_recieve(message);
 
     //scroll down
     chatMessages.scrollTop = chatMessages.scrollHeight;
 })
 
+socket.on('info', message => {
+    console.log(message);
+    outputInfo(message);
+
+})
 chatForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
@@ -46,15 +58,36 @@ chatForm.addEventListener('submit', (e) => {
 
 //output message to DOM
 
-function outputMessage(msg){
+function outputMessage_send(msg){
     const div = document.createElement('div');
-    div.classList.add('message');
+    div.classList.add('message-send');
     div.innerHTML = `
         <p class="meta">${msg.username} <span> ${msg.time}</span></p>
         <p class="text">
             ${msg.text}
         </p>
     `;
+
+    document.querySelector('.chat-messages').appendChild(div)
+}
+
+function outputMessage_recieve(msg){
+    const div = document.createElement('div');
+    div.classList.add('message-recieve');
+    div.innerHTML = `
+        <p class="meta">${msg.username} <span> ${msg.time}</span></p>
+        <p class="text">
+            ${msg.text}
+        </p>
+    `;
+
+    document.querySelector('.chat-messages').appendChild(div)
+}
+
+function outputInfo(msg){
+    const div = document.createElement('div');
+    div.classList.add('info');
+    div.innerHTML = `<p class="text">${msg.text}</p>`;
 
     document.querySelector('.chat-messages').appendChild(div)
 }

@@ -91,14 +91,41 @@ a {
 	overflow-y: scroll;
 }
 
-.chat-messages .message {
+.chat-messages .message-send {
 	padding: 10px;
 	margin-bottom: 15px;
+	width: 70%;
+	float: right;
+	left: 10px;
 	background-color: var(--light-color);
 	border-radius: 5px;
 }
 
-.chat-messages .message .meta {
+.chat-messages .message-recieve {
+	padding: 10px;
+	margin-bottom: 15px;
+	width: 70%;
+	float: left;
+	left: 10px;
+	background-color: var(--light-color);
+	border-radius: 5px;
+}
+
+.chat-messages .info {
+	clear: both;
+	padding: 5px;
+	margin-bottom: 10px;
+	width: 100%;
+	/* background-color: var(--light-color); */
+	/* border-radius: 5px; */
+}
+
+.chat-messages .info .text{
+	text-align: center;
+	font-size: small;
+}
+
+.chat-messages .message-send .meta, .chat-messages .message-recieve .meta {
 	font-size: 15px;
 	font-weight: bold;
 	color: var(--dark-color-b);
@@ -106,7 +133,7 @@ a {
 	margin-bottom: 7px;
 }
 
-.chat-messages .message .meta span {
+.chat-messages .message-send .meta span , .chat-messages .message-recieve .meta span {
 	color: #777;
 }
 
